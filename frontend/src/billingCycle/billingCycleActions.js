@@ -15,8 +15,23 @@ export function getList(){
 }
 
 export function create(values) {
-    return dispath => {
-        axios.post(`${BASE_URL}/billingCycles`, values)
+    return submit(values, 'post')
+}
+
+export function update(values) {
+    return submit(values, 'put')
+}
+
+export function remove(values){
+    return submit(values, 'delete')
+}
+
+function submit(values, method){
+    return dispath => { 
+        const id = values._id ? values._id : ''
+
+        // poderia utilizar axios.post ou axios.put
+        axios[method](`${BASE_URL}/billingCycles/${id}`, values)
         .then(resp => {
             toastr.success('Sucesso', 'Operação Realizada com sucesso.')
             dispath(init())
@@ -24,7 +39,7 @@ export function create(values) {
         .catch(e => {
             e.response.data.errors.forEach(error => toastr.error('Error', error))
         })
-    }    
+    } 
 }
 
 export function showUpdate(billingCycle){
@@ -32,6 +47,14 @@ export function showUpdate(billingCycle){
         showTabs('tabUpdate'),
         selectTab('tabUpdate'),
         initialize('billingCycleForm', billingCycle) // Inicializa o formulario com os dados
+    ]
+}
+
+export function showDelete(billingCycle){
+    return [
+        showTabs('tabDelete'),
+        selectTab('tabDelete'),
+        initialize('billingCycleForm', billingCycle) 
     ]
 }
 
